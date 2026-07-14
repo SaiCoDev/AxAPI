@@ -38,7 +38,6 @@ public class WrapperMapperRegistry {
 
         throw new UnknownWrappedException("Could not wrap " + object + ", due to there being no mapper for it's class: " + object.getClass() + "!");
     });
-    public static final WrapperMapper<ServerWrapper> SERVER = register("server", object -> ServerWrapper.INSTANCE);
     public static final WrapperMapper<WrappedItemStack> ITEM_STACK = register("item_stack", object -> {
         return switch (object) {
             case WrappedItemStack wrapped -> wrapped;

@@ -1,9 +1,6 @@
 package com.artillexstudios.axapi.nms.v26_2.wrapper;
 
 import com.artillexstudios.axapi.items.HashGenerator;
-import com.artillexstudios.axapi.nms.v26_2.packet.ChannelDuplexHandlerPacketListener;
-import com.artillexstudios.axapi.nms.v26_2.packet.PacketTransformer;
-import com.artillexstudios.axapi.packet.wrapper.PacketWrapper;
 import com.artillexstudios.axapi.reflection.FieldAccessor;
 import com.artillexstudios.axapi.utils.ComponentSerializer;
 import com.artillexstudios.axapi.utils.PlayerTextures;
@@ -49,19 +46,16 @@ public final class ServerPlayerWrapper implements com.artillexstudios.axapi.nms.
             .withClass("net.minecraft.server.level.ServerPlayer$1")
             .withField("cache")
             .build();
-    private final PacketTransformer transformer;
     private LoadingCache<Object, Integer> cache;
     private Player wrapped;
     private ServerPlayer serverPlayer;
 
     public ServerPlayerWrapper(Player player) {
         this.wrapped = player;
-        this.transformer = new PacketTransformer(this);
     }
 
     public ServerPlayerWrapper(ServerPlayer player) {
         this.serverPlayer = player;
-        this.transformer = new PacketTransformer(this);
     }
 
     @Override
@@ -78,10 +72,6 @@ public final class ServerPlayerWrapper implements com.artillexstudios.axapi.nms.
         if (channel.pipeline().names().contains(ServerPlayerWrapper.AXAPI_HANDLER)) {
             return;
         }
-
-        channel.eventLoop().submit(() -> {
-            channel.pipeline().addBefore(ServerPlayerWrapper.PACKET_HANDLER, ServerPlayerWrapper.AXAPI_HANDLER, new ChannelDuplexHandlerPacketListener(this));
-        });
     }
 
     @Override
@@ -101,11 +91,6 @@ public final class ServerPlayerWrapper implements com.artillexstudios.axapi.nms.
     @Override
     public void sendPacket(Object packet) {
         this.update();
-
-        if (packet instanceof PacketWrapper wrapper) {
-            this.serverPlayer.connection.send((Packet<?>) wrapper.cached());
-            return;
-        }
 
         if (!(packet instanceof Packet<?> p)) {
             LogUtils.warn("Failed to send unknown packet to player {}! Packet: {}", this.wrapped().getName(), packet);

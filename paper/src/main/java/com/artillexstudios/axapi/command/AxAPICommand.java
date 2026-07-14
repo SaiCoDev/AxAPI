@@ -1,11 +1,6 @@
 package com.artillexstudios.axapi.command;
 
 import com.artillexstudios.axapi.BuildConstants;
-import com.artillexstudios.axapi.nms.wrapper.ServerPlayerWrapper;
-import com.artillexstudios.axapi.nms.wrapper.ServerWrapper;
-import com.artillexstudios.axapi.packet.ClientboundPacketTypes;
-import com.artillexstudios.axapi.packet.PacketSide;
-import com.artillexstudios.axapi.packet.ServerboundPacketTypes;
 import com.artillexstudios.axapi.reflection.FieldAccessor;
 import com.artillexstudios.axapi.utils.ItemBuilder;
 import com.artillexstudios.axapi.utils.MessageUtils;
@@ -128,8 +123,7 @@ public final class AxAPICommand {
                 MessageUtils.sendMessage(sender, PREFIX, "<green>Successfully uploaded data to our paste service! URL: <click:open_url:'https://paste.artillex-studios.com/%key%'>https://paste.artillex-studios.com/%key%</click>".replace("%key%", key));
             } else {
                 Component message = MiniMessage.miniMessage().deserialize(PREFIX + "<green>Successfully uploaded data to our paste service! URL: <click:open_url:'https://paste.artillex-studios.com/%key%'>https://paste.artillex-studios.com/%key%</click>".replace("%key%", key));
-                ServerPlayerWrapper wrapper = ServerPlayerWrapper.wrap(player);
-                wrapper.message(message);
+                player.sendMessage(message);
             }
         });
     }
@@ -195,10 +189,7 @@ public final class AxAPICommand {
                 
                 Serverbound:
                 %server-serverbound%
-                """.replace("%clientbound%", ClientboundPacketTypes.dump())
-                .replace("%serverbound%", ServerboundPacketTypes.dump())
-                .replace("%server-clientbound%", ServerWrapper.INSTANCE.listPackets(PacketSide.CLIENT_BOUND))
-                .replace("%server-serverbound%", ServerWrapper.INSTANCE.listPackets(PacketSide.SERVER_BOUND));
+                """;
 
         this.upload(dump.replace("%time%", formatter.format(LocalDateTime.now()))
                 .replace("%server-software%", Bukkit.getName())
@@ -223,8 +214,7 @@ public final class AxAPICommand {
                 MessageUtils.sendMessage(sender, PREFIX, "<green>Successfully uploaded data to our paste service! URL: <click:open_url:'https://paste.artillex-studios.com/%key%'>https://paste.artillex-studios.com/%key%</click>".replace("%key%", key));
             } else {
                 Component message = MiniMessage.miniMessage().deserialize(PREFIX + "<green>Successfully uploaded data to our paste service! URL: <click:open_url:'https://paste.artillex-studios.com/%key%'>https://paste.artillex-studios.com/%key%</click>".replace("%key%", key));
-                ServerPlayerWrapper wrapper = ServerPlayerWrapper.wrap(player);
-                wrapper.message(message);
+                player.sendMessage(message);
             }
         });
     }
@@ -266,7 +256,6 @@ public final class AxAPICommand {
                 .clickEvent(ClickEvent.copyToClipboard(escaped))
         );
 
-        ServerPlayerWrapper wrapper = ServerPlayerWrapper.wrap(player);
-        wrapper.message(message);
+        player.sendMessage(message);
     }
 }

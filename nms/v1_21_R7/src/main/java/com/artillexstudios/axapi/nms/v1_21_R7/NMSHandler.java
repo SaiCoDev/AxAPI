@@ -2,16 +2,13 @@ package com.artillexstudios.axapi.nms.v1_21_R7;
 
 import com.artillexstudios.axapi.gui.AnvilInput;
 import com.artillexstudios.axapi.gui.SignInput;
-import com.artillexstudios.axapi.nms.v1_21_R7.entity.PacketEntity;
 import com.artillexstudios.axapi.nms.v1_21_R7.items.data.DataComponentImpl;
 import com.artillexstudios.axapi.nms.v1_21_R7.items.nbt.CompoundTag;
 import com.artillexstudios.axapi.nms.v1_21_R7.loot.LootTable;
-import com.artillexstudios.axapi.nms.v1_21_R7.packet.PacketTransformer;
 import com.artillexstudios.axapi.nms.v1_21_R7.wrapper.WrapperMapperRegistry;
 import com.artillexstudios.axapi.nms.wrapper.ServerPlayerWrapper;
 import com.artillexstudios.axapi.nms.wrapper.WrapperMapper;
 import com.artillexstudios.axapi.nms.wrapper.WrapperRegistry;
-import com.artillexstudios.axapi.packet.FriendlyByteBuf;
 import com.artillexstudios.axapi.serializers.Serializer;
 import com.artillexstudios.axapi.utils.ComponentSerializer;
 import com.google.gson.JsonElement;
@@ -86,11 +83,6 @@ public class NMSHandler implements com.artillexstudios.axapi.nms.NMSHandler {
     public int getProtocolVersionId(Player player) {
         ServerPlayer serverPlayer = ((CraftPlayer) player).getHandle();
         return serverPlayer.connection.connection.protocolVersion;
-    }
-
-    @Override
-    public PacketEntity createEntity(EntityType entityType, Location location) {
-        return new PacketEntity(entityType, location);
     }
 
     @Override
@@ -174,8 +166,4 @@ public class NMSHandler implements com.artillexstudios.axapi.nms.NMSHandler {
         return WrapperMapperRegistry.mapper(id);
     }
 
-    @Override
-    public FriendlyByteBuf newBuf() {
-        return PacketTransformer.newByteBuf();
-    }
 }

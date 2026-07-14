@@ -7,23 +7,13 @@ import com.artillexstudios.axapi.config.adapters.WrappedItemStackAdapter;
 import com.artillexstudios.axapi.dependencies.DependencyManagerWrapper;
 import com.artillexstudios.axapi.dependencies.UnsafeDependencyLoader;
 import com.artillexstudios.axapi.dependency.DependencyContainer;
-import com.artillexstudios.axapi.events.PacketEntityInteractEvent;
 import com.artillexstudios.axapi.gui.AnvilListener;
 import com.artillexstudios.axapi.gui.inventory.InventoryUpdater;
 import com.artillexstudios.axapi.gui.inventory.listener.InventoryClickListener;
-import com.artillexstudios.axapi.gui.inventory.renderer.InventoryRenderers;
-import com.artillexstudios.axapi.hologram.Holograms;
 import com.artillexstudios.axapi.items.WrappedItemStack;
 import com.artillexstudios.axapi.items.component.DataComponents;
 import com.artillexstudios.axapi.libraries.LibraryDownloader;
 import com.artillexstudios.axapi.nms.NMSHandlers;
-import com.artillexstudios.axapi.nms.wrapper.ServerPlayerWrapper;
-import com.artillexstudios.axapi.packet.ClientboundPacketTypes;
-import com.artillexstudios.axapi.packet.PacketEvents;
-import com.artillexstudios.axapi.packet.ServerboundPacketTypes;
-import com.artillexstudios.axapi.packet.listeners.BuiltinPacketListener;
-import com.artillexstudios.axapi.packetentity.tracker.EntityTracker;
-import com.artillexstudios.axapi.particle.ParticleTypes;
 import com.artillexstudios.axapi.placeholders.PaperPlaceholderHandler;
 import com.artillexstudios.axapi.placeholders.PlaceholderAPIHook;
 import com.artillexstudios.axapi.scheduler.Scheduler;
@@ -53,7 +43,6 @@ import revxrsal.commands.bukkit.BukkitCommandHandler;
 import java.nio.file.Path;
 
 public abstract class AxPlugin extends JavaPlugin {
-    public EntityTracker tracker;
 
     public AxPlugin() {
         DependencyContainer.register(FileUtils.class, new PaperFileUtils(this));
@@ -111,74 +100,13 @@ public abstract class AxPlugin extends JavaPlugin {
         DataComponents.setDataComponentImpl(NMSHandlers.getNmsHandler().dataComponents());
         Scheduler.scheduler.init(this);
 
-        if (FeatureFlags.PACKET_ENTITY_TRACKER_ENABLED.get()) {
-            this.tracker = new EntityTracker(this);
-            this.tracker.startTicking();
-        }
-
-        if (FeatureFlags.ENABLE_PACKET_LISTENERS.get()) {
-            PacketEvents.INSTANCE.addListener(new BuiltinPacketListener(this.tracker));
-        }
-
-        Bukkit.getPluginManager().registerEvents(new Listener() {
-            @EventHandler
-            public void onPlayerQuitEvent(@NotNull final PlayerQuitEvent event) {
-                InventoryRenderers.disconnect(event.getPlayer().getUniqueId());
-                ServerPlayerWrapper wrapper = ServerPlayerWrapper.wrap(event.getPlayer());
-                if (FeatureFlags.ENABLE_PACKET_LISTENERS.get()) {
-                    wrapper.uninject();
-                }
-
-                if (AxPlugin.this.tracker == null) {
-                    return;
-                }
-
-                AxPlugin.this.tracker.untrackFor(ServerPlayerWrapper.wrap(event.getPlayer()));
-            }
-
-            @EventHandler
-            public void onPlayerJoinEvent(@NotNull final PlayerJoinEvent event) {
-                ServerPlayerWrapper wrapper = ServerPlayerWrapper.wrap(event.getPlayer());
-                if (!FeatureFlags.ENABLE_PACKET_LISTENERS.get()) {
-                    return;
-                }
-
-                wrapper.inject();
-            }
-
-            @EventHandler
-            public void onPacketEntityInteractEvent(@NotNull final PacketEntityInteractEvent event) {
-                event.getPacketEntity().callInteract(event);
-            }
-
-            @EventHandler
-            public void onPlayerChangedWorldEvent(@NotNull final PlayerChangedWorldEvent event) {
-                if (AxPlugin.this.tracker == null) {
-                    return;
-                }
-
-                AxPlugin.this.tracker.untrackFor(ServerPlayerWrapper.wrap(event.getPlayer()));
-            }
-        }, this);
         Bukkit.getPluginManager().registerEvents(new AnvilListener(), this);
         if (FeatureFlags.ENABLE_GUI_LISTENERS.get()) {
             Bukkit.getPluginManager().registerEvents(new InventoryClickListener(), this);
         }
 
-        if (FeatureFlags.HOLOGRAM_UPDATE_TICKS.get() > 0) {
-            Holograms.startTicking();
-        }
-
         if (FeatureFlags.USE_INVENTORY_UPDATER.get()) {
             InventoryUpdater.INSTANCE.start(this);
-        }
-
-        ParticleTypes.init();
-        ClientboundPacketTypes.init();
-        ServerboundPacketTypes.init();
-        for (Player player : Bukkit.getOnlinePlayers()) {
-            ServerPlayerWrapper wrapper = ServerPlayerWrapper.wrap(player);
-            wrapper.inject();
         }
 
         this.enable();
@@ -209,16 +137,6 @@ public abstract class AxPlugin extends JavaPlugin {
     public void onDisable() {
         this.disable();
         Scheduler.get().cancelAll();
-
-        for (Player player : Bukkit.getOnlinePlayers()) {
-            ServerPlayerWrapper wrapper = ServerPlayerWrapper.wrap(player);
-            wrapper.uninject();
-        }
-
-        if (this.tracker != null) {
-            this.tracker.shutdown();
-        }
-        Holograms.shutdown();
         InventoryUpdater.INSTANCE.shutdown();
     }
 
