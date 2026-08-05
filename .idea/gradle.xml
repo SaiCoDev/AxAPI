@@ -5,29 +5,19 @@
     <option name="linkedExternalProjectsSettings">
       <GradleProjectSettings>
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
-        <option name="gradleJvm" value="temurin-21" />
+        <option name="gradleHome" value="C:\Gradle\gradle-8.14.2" />
+        <option name="gradleJvm" value="jbr-25" />
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/api" />
             <option value="$PROJECT_DIR$/folia" />
             <option value="$PROJECT_DIR$/nms" />
-            <option value="$PROJECT_DIR$/nms/v1_20_R1" />
-            <option value="$PROJECT_DIR$/nms/v1_20_R2" />
-            <option value="$PROJECT_DIR$/nms/v1_20_R3" />
-            <option value="$PROJECT_DIR$/nms/v1_20_R4" />
-            <option value="$PROJECT_DIR$/nms/v1_21_R1" />
-            <option value="$PROJECT_DIR$/nms/v1_21_R2" />
-            <option value="$PROJECT_DIR$/nms/v1_21_R3" />
-            <option value="$PROJECT_DIR$/nms/v1_21_R4" />
-            <option value="$PROJECT_DIR$/nms/v1_21_R5" />
-            <option value="$PROJECT_DIR$/nms/v1_21_R6" />
-            <option value="$PROJECT_DIR$/nms/v1_21_R7" />
-            <option value="$PROJECT_DIR$/nms/v26_1" />
             <option value="$PROJECT_DIR$/nms/v26_2" />
             <option value="$PROJECT_DIR$/paper" />
           </set>
         </option>
+        <option name="resolveExternalAnnotations" value="true" />
       </GradleProjectSettings>
     </option>
   </component>

@@ -13,7 +13,7 @@ java {
     }
 }
 
-def java25NmsModules = ["v26_1", "v26_2"]
+def java25NmsModules = ["v26_2"]
 
 dependencies {
     compileOnly project(path: ":api")
@@ -26,17 +26,7 @@ dependencies {
             }
         }
     }
-    implementation project(path: ":nms:v1_21_R7", configuration: "reobf")
-    implementation project(path: ":nms:v1_21_R6", configuration: "reobf")
-    implementation project(path: ":nms:v1_21_R5", configuration: "reobf")
-    implementation project(path: ":nms:v1_21_R4", configuration: "reobf")
-    implementation project(path: ":nms:v1_21_R3", configuration: "reobf")
-    implementation project(path: ":nms:v1_21_R2", configuration: "reobf")
-    implementation project(path: ":nms:v1_21_R1", configuration: "reobf")
-    implementation project(path: ":nms:v1_20_R4", configuration: "reobf")
-    implementation project(path: ":nms:v1_20_R3", configuration: "reobf")
-    implementation project(path: ":nms:v1_20_R2", configuration: "reobf")
-    implementation project(path: ":nms:v1_20_R1", configuration: "reobf")
+    implementation project(path: ":nms:v26_2", configuration: "reobf")
 }
 
 allprojects {
@@ -81,11 +71,11 @@ allprojects {
         afterEvaluate {
             repositories {
                 maven {
-                    name = "Artillex-Studios"
-                    url = "https://repo.artillex-studios.com/releases"
+                    name = "Enchanted"
+                    url = "https://maven.enchanted.dev/repository/maven-releases"
                     credentials {
-                        it.username = System.getenv("MAVEN_USERNAME") ?: "${maven_username}"
-                        it.password = System.getenv("MAVEN_PASSWORD") ?: "${maven_password}"
+                        it.username = System.getenv("MAVEN_USERNAME") ?: findProperty("maven_username")
+                        it.password = System.getenv("MAVEN_PASSWORD") ?: findProperty("maven_password")
                     }
                 }
             }
