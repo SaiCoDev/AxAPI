@@ -39,7 +39,6 @@ allprojects {
         options.compilerArgs += ["-parameters"]
         options.encoding = "UTF-8"
         options.fork = true
-        dependsOn(clean)
     }
 
     repositories {
