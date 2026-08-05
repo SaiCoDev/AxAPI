@@ -68,32 +68,32 @@ allprojects {
     }
 
     publishing {
-        afterEvaluate {
-            repositories {
-                maven {
-                    name = "Enchanted"
-                    url = "https://maven.enchanted.dev/repository/maven-releases"
-                    credentials {
-                        it.username = System.getenv("MAVEN_USERNAME") ?: findProperty("maven_username")
-                        it.password = System.getenv("MAVEN_PASSWORD") ?: findProperty("maven_password")
-                    }
+        repositories {
+            maven {
+                name = "Enchanted"
+                url = "https://maven.enchanted.dev/repository/maven-releases"
+                credentials {
+                    it.username = System.getenv("MAVEN_USERNAME") ?: findProperty("maven_username")
+                    it.password = System.getenv("MAVEN_PASSWORD") ?: findProperty("maven_password")
                 }
+            }
+        }
+
+        afterEvaluate {
+            // Only the root fat jar and the standalone API are consumable artifacts.
+            // The nms modules are bundled into the root shadow jar, so they are not published.
+            if (project != rootProject && project.name != "api") {
+                return
             }
 
             publications {
-                if (project == rootProject || project.name == "api" || java25NmsModules.contains(project.name.replace(":nms:", ""))) {
-                    shadow(MavenPublication) { ->
-                        if (project.name == "api") {
-                            artifactId = "axapi-api"
-                        } else {
-                            artifactId = "axapi"
-                        }
-                        from components.shadow
+                shadow(MavenPublication) { ->
+                    groupId = "com.artillexstudios.axapi"
+                    artifactId = project == rootProject ? "axapi" : "axapi-api"
+                    from components.shadow
 
-                        println("Project: ${project.name}")
-                        if (project.name == "api" || project.name == "paper") {
-                            artifact tasks.javadocJar
-                        }
+                    if (project.name == "api") {
+                        artifact tasks.javadocJar
                     }
                 }
             }
