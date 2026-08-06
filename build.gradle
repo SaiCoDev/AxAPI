@@ -114,6 +114,7 @@ allprojects {
 
 shadowJar {
     from project(':api').sourceSets.main.output
+    from project(':nms:v26_2').sourceSets.main.output
 }
 
 tasks.build.dependsOn(shadowJar)
